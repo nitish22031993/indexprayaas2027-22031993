@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Helping Hand Foundation - NGO Dashboard</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f6f9;color:#333}
+.header{height:90px;background:#1e272e;color:white;display:flex;justify-content:space-between;align-items:center;padding:5px 20px;position:fixed;top:0;left:0;width:100%;z-index:1000;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+.logo{display:flex;align-items:center}.logo img{height:82px;max-width:120px;object-fit:contain;margin-right:12px}.logo h2{font-size:18px;line-height:1.4;margin:0}
+.header-founder{display:flex;align-items:center;text-align:right}.header-founder img{height:75px;width:72px;object-fit:cover;border-radius:50%;border:3px solid white;margin-left:12px}
+.sidebar{position:fixed;top:90px;left:0;width:260px;height:calc(100vh - 90px);background:#2f3640;overflow-y:auto;padding:20px 15px;z-index:998;box-shadow:3px 0 10px rgba(0,0,0,.2)}
+.founder-card{background:#1e272e;border-radius:15px;padding:20px 10px;text-align:center;color:white;margin-bottom:20px;border:2px solid #e74c3c}
+.founder-card img{width:140px;height:150px;object-fit:cover;border-radius:50%;border:4px solid white;margin-bottom:10px}
+.founder-card h3{margin:5px 0;font-size:18px}.founder-title{color:#f1c40f;font-weight:bold;margin-bottom:15px}
+.founder-writeup{font-size:13px;line-height:1.6;color:#ecf0f1;text-align:justify}
+.sidebar-info{background:#34495e;color:white;padding:12px;border-radius:10px;font-size:13px;line-height:1.6}
+.main{margin-left:260px;padding:30px;padding-top:145px}
+.headline{position:fixed;top:90px;left:260px;width:calc(100% - 260px);background:red;color:white;overflow:hidden;white-space:nowrap;height:45px;border-top:2px solid yellow;border-bottom:2px solid yellow;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,.3);display:flex;align-items:center}
+.headline p{display:inline-block;padding-left:100%;animation:scroll 60s linear infinite;font-size:18px;font-weight:bold;margin:0}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+.dashboard-title{text-align:center;color:#1e272e;margin-bottom:25px;font-size:28px}.dashboard-title span{color:#e74c3c}
+.dropdown-container{max-width:1100px;margin:auto}.dropdown{background:white;margin-bottom:18px;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.12);border:1px solid #ddd}
+.dropdown-header{background:#2f3640;color:white;padding:18px 22px;font-size:20px;font-weight:bold;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:.3s}
+.dropdown-header:hover{background:#1e272e}.dropdown-header .arrow{font-size:20px;transition:.3s}.dropdown.active .arrow{transform:rotate(180deg)}
+.dropdown-content{display:none;padding:15px;background:#f8f9fa}.dropdown.active .dropdown-content{display:block}
+.item{display:flex;justify-content:space-between;align-items:center;background:white;border:1px solid #ddd;border-radius:8px;padding:13px 15px;margin-bottom:9px;transition:.2s}
+.item:hover{box-shadow:0 3px 8px rgba(0,0,0,.12);transform:translateY(-1px)}
+.item-name{font-weight:bold;color:#2f3640;font-size:15px}
+.btn{background:#3498db;color:white;padding:8px 18px;text-decoration:none;border-radius:6px;font-size:13px;font-weight:bold;transition:.2s;white-space:nowrap}.btn:hover{background:#2980b9}
+.disabled{background:#95a5a6;cursor:not-allowed;opacity:.8}
+.footer{text-align:center;margin-top:30px;padding:15px;color:#777;font-size:13px}
+
+/* ================= TOP TASK BAR ================= */
+
+.dropdown-container{
+    max-width:1100px;
+    margin:0 auto;
+}
+
+.dropdown{
+    display:none;
+}
+
+.top-task-bar{
+    position:sticky;
+    top:135px;
+    z-index:900;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    background:#ffffff;
+    padding:12px;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,.12);
+    margin-bottom:20px;
+}
+
+.task-btn{
+    border:0;
+    background:#2f3640;
+    color:white;
+    padding:13px 22px;
+    border-radius:8px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.task-btn:hover,
+.task-btn.active{
+    background:#e74c3c;
+}
+
+.task-panel{
+    display:none;
+    background:#f8f9fa;
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    margin-bottom:20px;
+}
+
+.task-panel.active{
+    display:block;
+}
+
+/* ================= HERO PHOTO ================= */
+
+.hero-upload-section{
+    width:100%;
+    max-width:1100px;
+    margin:0 auto 25px;
+    text-align:center;
+}
+
+.hero-photo-box{
+    width:100%;
+    height:300px;
+    background:#e9ecef;
+    border:3px dashed #3498db;
+    border-radius:15px;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.hero-photo-box img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+#heroPlaceholder{
+    color:#6c757d;
+}
+
+#heroPlaceholder h2{
+    margin:8px 0;
+    color:#2f3640;
+}
+
+.upload-icon{
+    font-size:45px;
+}
+
+.upload-btn{
+    display:inline-block;
+    margin-top:12px;
+    background:#3498db;
+    color:white;
+    padding:10px 25px;
+    border-radius:7px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.upload-btn:hover{
+    background:#2980b9;
+}
+
+@media(max-width:800px){
+.header{height:auto;min-height:80px;padding:8px 10px}.logo img{height:55px;width:65px}.logo h2{font-size:12px}.header-founder{display:none}
+.sidebar{position:relative;top:auto;width:100%;height:auto;padding:15px;margin-top:80px}.main{margin-left:0;padding:20px;padding-top:70px}
+.headline{position:relative;top:auto;left:auto;width:100%;margin-top:0}.headline p{font-size:14px}.dashboard-title{font-size:22px}
+.item{flex-direction:column;align-items:flex-start;gap:10px}.btn{width:100%;text-align:center}
+}
+</style>
+</head>
+<body><div id="loginBox" style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#2f3640;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:99999;
+">
+
+<div style="
+background:white;
+padding:30px;
+border-radius:15px;
+width:350px;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,.3);
+">
+
+<h2>HELPING HAND FOUNDATION</h2>
+
+<input id="loginUser"
+type="text"
+placeholder="User ID"
+style="width:100%;padding:12px;margin:8px 0;border:1px solid #ccc;border-radius:6px;">
+
+<input id="loginPass"
+type="password"
+placeholder="Password"
+style="width:100%;padding:12px;margin:8px 0;border:1px solid #ccc;border-radius:6px;">
+
+<button onclick="checkLogin()" style="
+width:100%;
+padding:12px;
+margin-top:10px;
+background:#e74c3c;
+color:white;
+border:0;
+border-radius:6px;
+font-weight:bold;
+cursor:pointer;
+">
+🔐 LOGIN
+</button>
+
+<p id="loginError" style="color:red;font-weight:bold;"></p>
+
+</div>
+</div>
+
+<div class="header">
+<div class="logo">
+<img src="HH LOGO....png">
+<h2>HELPING HAND FOUNDATION<br>EVERY CHILD COUNTS</h2>
+</div>
+<div class="header-founder">
+<div><strong>MODERN ACADEMY</strong><br><small>PRAYAAS FY 2026-27</small></div>
+<img src="Prayaas.jpg"><button onclick="document.getElementById('loginBox').style.display='flex'"
+style="
+margin-left:15px;
+background:#e74c3c;
+color:white;
+border:0;
+padding:9px 15px;
+border-radius:7px;
+font-weight:bold;
+cursor:pointer;
+">
+🚪 Logout
+</button>
+</div>
+</div>
+
+<div class="sidebar">
+<div class="founder-card">
+<img src="ANM07070.jpg">
+<h3>PRITTI JHUNJHUNWALA</h3>
+<div class="founder-title">FOUNDER</div>
+<div class="founder-writeup">
+<b>Helping Hand Foundation</b> is committed to supporting children and families through education, development and social initiatives.
+<br><br>
+Under the leadership of <b>Ms. Pritti Jhunjhunwala</b>, the foundation works towards creating better educational opportunities and empowering children to build a brighter future.
+</div>
+</div>
+<div class="sidebar-info">
+<b>HELPING HAND FOUNDATION</b><br><br>
+<b>Project:</b><br>Prayaas – Modern Academy<br><br>
+<b>Session:</b><br>FY 2026-27<br><br>
+<b>Location:</b><br>76, Eldeco Greens, Gomti Nagar,<br>Lucknow, Uttar Pradesh 226010
+</div>
+</div>
+
+<div class="main">
+<div class="headline"><p>📢 Helping Hand Foundation शिक्षा, सहयोग और सशक्तिकरण के माध्यम से बच्चों के उज्ज्वल भविष्य की दिशा में निरंतर प्रयासरत है। हमारा उद्देश्य हर बच्चे को गुणवत्तापूर्ण शिक्षा, बेहतर अवसर और अपने सपनों को पूरा करने का आत्मविश्वास देना है। आपका छोटा सा सहयोग किसी बच्चे के जीवन में बड़ा बदलाव ला सकता है। आइए, मिलकर शिक्षा की रोशनी फैलाएं, बच्चों को आगे बढ़ने का अवसर दें और एक बेहतर एवं सशक्त समाज के निर्माण में अपना योगदान दें। | क्षेत्र: 76, एल्डेको ग्रीन्स, गोमती नगर, लखनऊ, उत्तर प्रदेश - 226010,📞 संपर्क करें: +91-7571000653</p></div>
+<!-- TOP TASK BAR -->
+<div class="top-task-bar">
+    <button class="task-btn" onclick="showTask('preAdmission', this)">📋 PRE-ADMISSION</button>
+    <button class="task-btn" onclick="showTask('postAdmission', this)">🎒 POST ADMISSION</button>
+    <button class="task-btn" onclick="showTask('monitoring', this)">📊 MONITORING</button>
+    <button class="task-btn" onclick="showTask('miscellaneous', this)">⚙️ MISCELLANEOUS</button>
+</div>
+<div class="dropdown-container">
+
+<!-- PRE-ADMISSION -->
+<div class="task-panel" id="preAdmission">
+<div class="item"><span class="item-name">Slum List</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1g41vpxYsyQRQbsWOih4o3TWPNcFeuRRe/edit" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">HH Slum Area</span><a class="btn" href="https://hhslumarea.netlify.app/" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Master Sheet</span><a class="btn" href="https://docs.google.com/spreadsheets/d/13tZs38D1p4XSBklyScVPTBhOey9aRmTu/edit" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Application Received &amp; Prospective Report</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1RU9yPNll5wtYAfJtbXKmQST6bHaltJXX/edit" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Application Pending &amp; Rejected</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1lCfQU0x6pZEa4zEJzgzAQG0oKncO9mNyr0VptqSCLOo/edit?usp=sharing" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">HH Form Details</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1TaNzC7k6owre1IqtoHz72A_fhmttvv3p0QbiB710h0U/edit?usp=sharing" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">HH Digital Form</span><a class="btn" href="https://nitish22031993.github.io/helpinghand-22031993/" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Online Field Form</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1-sW4dHV3TpgnyG6oX34conK1eck6UsmO/edit?usp=sharing&ouid=116035300075167090514&rtpof=true&sd=true" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Online Field Form PDF</span><a class="btn" href="https://drive.google.com/file/d/1vN8Iz6pjHGiLgON5hjgbl2BLziUGzas2/view?usp=sharing" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Timeline Sheet</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1i8Z700wzeSGA1YFa2mUVSTcw2ciKPy6b/edit" target="_blank">Open</a></div>
+</div>
+
+<!-- POST ADMISSION -->
+<div class="task-panel" id="postAdmission">
+<div class="item"><span class="item-name">Gift Distribution</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1v2h7Bmxr8ccMFbGbIhahP-xwMCYr-Cso-2mKPWGI3JA/edit?usp=sharing" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Bag Distribution</span><a class="btn" href="https://docs.google.com/spreadsheets/d/12DeB4aenq9kchaG961ffW5Nh0Ps0ADYp56tMggPizW4/edit?usp=sharing" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Book Distribution</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1Prpth71ME3vs5AKR7TH6WSBlDXpv0IwG/edit?usp=sharing&ouid=116035300075167090514&rtpof=true&sd=true" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Sibling Report</span><a class="btn" href="https://docs.google.com/spreadsheets/d/10sN2hi4kibQsmFB_IGOKfA3sAsfjsETO/edit" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Uniform List</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1Eu5NlxnTq-KXcxRA_zrPER-qfEYJfC5x/edit" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Payment &amp; Fees</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1X7LV2I0KNP_xOzzhYdfpH1jWx47rBWr3/edit" target="_blank">Open</a></div>
+</div>
+
+<!-- MONITORING -->
+<div class="task-panel" id="monitoring">
+<div class="item"><span class="item-name">Calendar</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1mV7Eq-hNcLhH-mn17NzSszWJez9p7gUi/edit" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Attendance</span><a class="btn" href="https://docs.google.com/spreadsheets/d/12NMVlCd7ChjvulF8Oe_CQv2j9nCRmCs4/edit" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">PTM Details</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1yZmAmWcjh_hylgOQ3HsiSwuM0qd3U1lHKRtBvAcTBF8/edit" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Counselling Details</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1vbGm106BDZpOIG7y7sNOHjJ3XFADSZBoDU9-Y9ZlCB4/edit?usp=sharing" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Follow-up</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1i4HR-wSrqwcZnM8zLXpbYjJgiD5ASi6zmUe5T6d4vW4/edit?usp=sharing" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Result</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1vM9fCYocAYMw9TmXZRdM-IPkybuIrvWE/edit" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Drop-Out List</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1dejflex6pC-BwHKTqfDaS42GG8lYA6bw0kZCkmMZbg4/edit" target="_blank">Open</a></div>
+</div>
+
+<!-- MISCELLANEOUS -->
+<div class="task-panel" id="miscellaneous">
+<div class="item"><span class="item-name">Gift Inventory</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1-kcftREn8idxZ2jGhhtaR5ixIDiKRwau/edit" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Incentive</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1Z3UNxw2Q16FEf0wdfWvRH7zT-JAFn5PXyJ9Wlk7MHFs/edit?usp=sharing" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Events</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1MnWqEJ4q6a_XCDZUPahaevRJ1OdqrQAk/edit" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Measurement</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1B25lbebZf4uTY9n0lNrooiMK5-JR27a7/edit" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Annual Budget</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1LWWeQZ_wzjF_2MAUUdf9IwszyOf1GMQU/edit?usp=sharing&ouid=116035300075167090514&rtpof=true&sd=true" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Incentive Policy</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1iLKSCBH78oVvLshUK2PJ0SJji-qZGEI5/edit" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Prerna Policy</span><a class="btn" href="https://docs.google.com/document/d/1BhSGAo0CaDm_CLJXGIcneDrJpycScvPj/edit?usp=sharing&ouid=116035300075167090514&rtpof=true&sd=true" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">HH Policy</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1vo2xb5pjtXb2Kvo7ML8CcLHbCei56--Ws94hCYLFofA/edit?usp=sharing" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">SOP</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1VtBQfbkjpKuoRgWPpzi-0UmItSKMmRHpLoNg4VtnvZY/edit?usp=sharing" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">School Timing</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1hKrrVg_qYLB0rJyg6s0dURCMGFjzp2h-cQFZAbKmBqk/edit?usp=sharing" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Convence</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1GGnLKAcn-xaVBKjfDQKl5W__kZrx3JfxBcuT9OjonwQ/edit?usp=sharing" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">KRA</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1AI-qelck9LwGD-HjRpTEZHXTDltqjgUV/edit" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Daily Report</span><a class="btn" href="https://docs.google.com/spreadsheets/d/1BgZHzrgU0ba4DBM9qjb1Tnxv3XkyKobaqEIGd8283rA/edit?usp=sharing" target="_blank">Open</a></div>
+<div class="item"><span class="item-name">Prerna Aug Pendancy</span><a class="btn" href="https://docs.google.com/spreadsheets/d/11pFWZuwyS0hfyPl0bJHG3hsB4BaJC3yT9lLfrOq0zaw/edit?usp=sharing" target="_blank">Open</a></div>
+</div>
+
+</div>
+
+<h1 class="dashboard-title">HELPING HAND FOUNDATION <span>| DASHBOARD</span></h1>
+
+<!-- HERO PHOTO UPLOAD -->
+<div class="hero-upload-section">
+    <div class="hero-photo-box" id="heroPhotoBox">
+        <img id="heroPhoto" src="" alt="Dashboard Photo" style="display:none;">
+        <div id="heroPlaceholder">
+            <div class="upload-icon">📷</div>
+            <h2>Upload Dashboard Photo</h2>
+            <p>यहाँ अपनी बड़ी photo upload करें</p>
+        </div>
+    </div>
+
+    <label class="upload-btn" for="heroImageInput">📤 Upload Photo</label>
+    <input type="file" id="heroImageInput" accept="image/*" hidden>
+</div>
+
+<div class="footer">© 2026 Helping Hand Foundation | Prayaas Modern Academy</div>
+</div>
+
+<script>
+function showTask(taskId, button){
+    const panel = document.getElementById(taskId);
+    const isOpen = panel.classList.contains("active");
+
+    // Close all dropdowns and reset all buttons
+    document.querySelectorAll(".task-panel").forEach(function(p){
+        p.classList.remove("active");
+    });
+
+    document.querySelectorAll(".task-btn").forEach(function(btn){
+        btn.classList.remove("active");
+    });
+
+    // If the clicked section was closed, open it.
+    // If it was already open, leave everything closed.
+    if(!isOpen){
+        panel.classList.add("active");
+        button.classList.add("active");
+    }
+}
+
+const heroImageInput = document.getElementById("heroImageInput");
+const heroPhoto = document.getElementById("heroPhoto");
+const heroPlaceholder = document.getElementById("heroPlaceholder");
+
+heroImageInput.addEventListener("change", function(){
+    const file = this.files[0];
+
+    if(file){
+        const reader = new FileReader();
+
+        reader.onload = function(e){
+            heroPhoto.src = e.target.result;
+            heroPhoto.style.display = "block";
+            heroPlaceholder.style.display = "none";
+        };
+
+        reader.readAsDataURL(file);
+    }
+});
+function checkLogin(){
+
+    const user = document.getElementById("loginUser").value;
+    const pass = document.getElementById("loginPass").value;
+
+    if(user === "nitish@123" && pass === "nitish@1993"){
+
+        document.getElementById("loginBox").style.display = "none";
+
+    }else{
+
+        document.getElementById("loginError").innerText =
+        "❌ गलत User ID या Password";
+
+    }
+}
+</script>
+</body>
+</html>
